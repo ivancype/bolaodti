@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-// Correção aqui: O SDK exporta a classe GoogleGenAI dentro do pacote
-const { GoogleGenAI } = require("@google/generative-ai"); 
+// A classe correta exportada pelo pacote npm é GoogleGenerativeAI
+const { GoogleGenerativeAI } = require("@google/generative-ai"); 
 
 const pastaImagens = path.join(__dirname, 'imagens');
 const pastaDados = path.join(__dirname, 'dados');
@@ -10,8 +10,8 @@ if (!fs.existsSync(pastaImagens)) fs.mkdirSync(pastaImagens);
 if (!fs.existsSync(pastaDados)) fs.mkdirSync(pastaDados);
 
 async function executar() {
-    // Agora a instância funcionará perfeitamente
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    // Instancie usando o nome correto da classe:
+    const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const modelo = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const arquivosImagens = fs.readdirSync(pastaImagens).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
