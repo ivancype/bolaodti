@@ -3,7 +3,8 @@ name: Pipeline do Bolão - Gemini
 on:
   push:
     paths:
-      - 'imagens/**' # Roda apenas se houver novos prints na pasta
+      - 'imagens/**'
+  workflow_dispatch: # Permite forçar o deploy manualmente pelo botão
 
 permissions:
   contents: write
