@@ -1,8 +1,20 @@
 {
   "name": "processador-bolao-gemini",
   "version": "1.0.0",
-  "description": "Processa prints de bolão usando o novo SDK do Gemini",
+  "description": "Pipeline automatizada com GitHub Actions para ler prints de bolão usando o novo SDK @google/genai",
   "main": "processar.js",
+  "scripts": {
+    "start": "node processar.js"
+  },
+  "keywords": [
+    "gemini",
+    "github-actions",
+    "automation",
+    "ocr",
+    "bolao"
+  ],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@google/genai": "^0.1.1"
   }
