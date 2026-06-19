@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-// Importa a classe correta do novo SDK
+// No novo SDK, a importação padrão traz o inicializador correto
 const { GoogleGenAI } = require("@google/genai"); 
 
 const pastaImagens = path.join(__dirname, 'imagens');
@@ -10,7 +10,7 @@ if (!fs.existsSync(pastaImagens)) fs.mkdirSync(pastaImagens);
 if (!fs.existsSync(pastaDados)) fs.mkdirSync(pastaDados);
 
 async function executar() {
-    // No novo SDK, você passa o objeto com a propriedade apiKey
+    // Inicialização oficial do novo SDK
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const arquivosImagens = fs.readdirSync(pastaImagens).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
@@ -24,10 +24,10 @@ async function executar() {
             continue;
         }
 
-        console.log(`🤖 Processando com o Novo SDK do Gemini: ${arquivo}...`);
+        console.log(`🤖 Processando com @google/genai: ${arquivo}...`);
 
         try {
-            const imagemBase64 = fs.readFileSync(path.join(pastaImagens, arquivo), { encoding: 'base64' });
+            const imagemBuffer = fs.readFileSync(path.join(pastaImagens, arquivo));
 
             const prompt = `Analise a imagem deste bolão. Extraia os dados e retorne ESTRITAMENTE um objeto JSON liso, sem blocos de código markdown (\`\`\`json).
             Siga rigidamente este esquema:
@@ -48,23 +48,26 @@ async function executar() {
               ]
             }`;
 
-            // Mudança na API: Agora a chamada é feita através de ai.models.generateContent
+            // ESTRUTURA CORRETA DO NOVO SDK:
+            // Passamos um objeto simples com 'inlineData' direto no array de contents
             const resultado = await ai.models.generateContent({
                 model: 'gemini-1.5-flash',
                 contents: [
                     prompt,
                     {
                         inlineData: {
-                            data: imagemBase64,
+                            // O novo SDK aceita a string base64 diretamente aqui
+                            data: imagemBuffer.toString('base64'),
                             mimeType: "image/png"
                         }
                     }
                 ]
             });
 
+            // No novo SDK, o texto plano vem direto na propriedade .text
             const respostaTexto = resultado.text.trim();
             
-            // Valida se veio um JSON correto
+            // Valida o JSON
             JSON.parse(respostaTexto); 
 
             fs.writeFileSync(arquivoJsonDestino, respostaTexto, 'utf-8');
