@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Bolão Copa 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="graficoPontos"></canvas>
+
+    <script>
+        async function renderizarDashboard() {
+            // Supondo que você leia o JSON consolidado gerado pela action
+            const res = await fetch('dados/Screenshot (19 de jun. de 2026 15:27:45).json');
+            const dadosPartida = await res.json();
+
+            // Preparar dados para o gráfico (Exemplo: Membros vs Pontos obtidos)
+            const labels = dadosPartida.previsoes_membros.map(m => m.membro);
+            const pontos = dadosPartida.previsoes_membros.map(m => m.pontos);
+
+            const ctx = document.getElementById('graficoPontos').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `Pontuação - ${dadosPartida.detalhes_partida.time_1} vs ${dadosPartida.detalhes_partida.time_2}`,
+                        data: pontos,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                    }]
+                }
+            });
+        }
+        window.onload = renderizarDashboard;
+    </script>
+</body>
+</html>
