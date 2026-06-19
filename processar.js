@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-// A classe correta exportada pelo pacote npm é GoogleGenerativeAI
-const { GoogleGenerativeAI } = require("@google/generative-ai"); 
+// Importa a classe correta do novo SDK
+const { GoogleGenAI } = require("@google/genai"); 
 
 const pastaImagens = path.join(__dirname, 'imagens');
 const pastaDados = path.join(__dirname, 'dados');
@@ -10,9 +10,8 @@ if (!fs.existsSync(pastaImagens)) fs.mkdirSync(pastaImagens);
 if (!fs.existsSync(pastaDados)) fs.mkdirSync(pastaDados);
 
 async function executar() {
-    // Instancie usando o nome correto da classe:
-    const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const modelo = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // No novo SDK, você passa o objeto com a propriedade apiKey
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const arquivosImagens = fs.readdirSync(pastaImagens).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
 
@@ -20,18 +19,16 @@ async function executar() {
         const nomeSemExtensao = path.parse(arquivo).name;
         const arquivoJsonDestino = path.join(pastaDados, `${nomeSemExtensao}.json`);
 
-        // Evita reprocessar e gastar cota da API à toa
         if (fs.existsSync(arquivoJsonDestino)) {
             console.log(`⏩ Ignorando ${arquivo} (já processado).`);
             continue;
         }
 
-        console.log(`🤖 Processando com Gemini: ${arquivo}...`);
+        console.log(`🤖 Processando com o Novo SDK do Gemini: ${arquivo}...`);
 
         try {
             const imagemBase64 = fs.readFileSync(path.join(pastaImagens, arquivo), { encoding: 'base64' });
 
-            // Passamos o esquema exato diretamente no prompt (Structured Outputs alternativo)
             const prompt = `Analise a imagem deste bolão. Extraia os dados e retorne ESTRITAMENTE um objeto JSON liso, sem blocos de código markdown (\`\`\`json).
             Siga rigidamente este esquema:
             {
@@ -51,18 +48,27 @@ async function executar() {
               ]
             }`;
 
-            const resultado = await modelo.generateContent([
-                prompt,
-                { inlineData: { data: imagemBase64, mimeType: "image/png" } }
-            ]);
+            // Mudança na API: Agora a chamada é feita através de ai.models.generateContent
+            const resultado = await ai.models.generateContent({
+                model: 'gemini-1.5-flash',
+                contents: [
+                    prompt,
+                    {
+                        inlineData: {
+                            data: imagemBase64,
+                            mimeType: "image/png"
+                        }
+                    }
+                ]
+            });
 
-            const respostaTexto = resultado.response.text().trim();
+            const respostaTexto = resultado.text.trim();
             
-            // Valida se a resposta é um JSON legítimo antes de salvar
+            // Valida se veio um JSON correto
             JSON.parse(respostaTexto); 
 
-            fs.writeFileSync(arquivoJsonDestino, respuestaTexto, 'utf-8');
-            console.log(`✅ Dados salvos com sucesso em: dados/${nomeSemExtensao}.json`);
+            fs.writeFileSync(arquivoJsonDestino, respostaTexto, 'utf-8');
+            console.log(`✅ Dados salvos em: dados/${nomeSemExtensao}.json`);
 
         } catch (erro) {
             console.error(`❌ Erro ao processar o arquivo ${arquivo}:`, erro.message);
