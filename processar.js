@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { GoogleGenAI } from '@google/genai';
+import GoogleGenAI from '@google/genai';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
