@@ -1,9 +1,9 @@
-name: Processar Prints e Atualizar Dashboard
+name: Pipeline do Bolão - Gemini
 
 on:
   push:
     paths:
-      - 'imagens/**' # Só roda se você adicionar ou mexer em algo na pasta de imagens
+      - 'imagens/**' # Roda apenas se houver novos prints na pasta
 
 permissions:
   contents: write
@@ -11,30 +11,30 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  processar-e-publicar:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do código
+      - name: Checkout do Código
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-index: '20'
+          node-version: '20'
 
       - name: Instalar Dependências
         run: npm install
 
-      - name: Rodar a Inteligência Artificial
+      - name: Chamar API do Gemini
         env:
-          IA_API_KEY: ${{ secrets.IA_API_KEY }} # Sua chave protegida nos Secrets do GitHub
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node processar.js
 
-      - name: Commitar dados.json atualizado
+      - name: Salvar JSONs gerados de volta no Git
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🤖 [Bot] Atualiza dados.json com novos prints processados"
-          file_pattern: 'dados.json'
+          commit_message: "🤖 [Bot] Adiciona dados consolidados via Gemini"
+          file_pattern: 'dados/*.json'
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v4
@@ -42,7 +42,7 @@ jobs:
       - name: Upload do Site Estático
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' # Sobe a raiz do projeto (incluindo o novo dados.json e o index.html)
+          path: '.'
 
       - name: Deploy para o GitHub Pages
         uses: actions/deploy-pages@v4
