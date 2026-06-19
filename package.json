@@ -1,9 +1,9 @@
 {
   "name": "processador-bolao-gemini",
   "version": "1.0.0",
-  "description": "Processa prints de bolão usando Gemini e gera dados estáticos",
+  "description": "Processa prints de bolão usando o novo SDK do Gemini",
   "main": "processar.js",
   "dependencies": {
-    "@google/generative-ai": "^0.1.0"
+    "@google/genai": "^0.1.1"
   }
 }
