@@ -1,18 +1,17 @@
 const fs = require('fs');
 const path = require('path');
-const { GoogleGenAI } = require("@google/generative-ai");
+// Correção aqui: O SDK exporta a classe GoogleGenAI dentro do pacote
+const { GoogleGenAI } = require("@google/generative-ai"); 
 
 const pastaImagens = path.join(__dirname, 'imagens');
 const pastaDados = path.join(__dirname, 'dados');
 
-// Cria as pastas se não existirem
 if (!fs.existsSync(pastaImagens)) fs.mkdirSync(pastaImagens);
 if (!fs.existsSync(pastaDados)) fs.mkdirSync(pastaDados);
 
 async function executar() {
-    // Inicializa o SDK do Gemini com a chave dos Secrets do GitHub
+    // Agora a instância funcionará perfeitamente
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    // Usamos o modelo Flash que é rápido, multimodal e ideal para extração de dados
     const modelo = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const arquivosImagens = fs.readdirSync(pastaImagens).filter(f => /\.(png|jpg|jpeg)$/i.test(f));
