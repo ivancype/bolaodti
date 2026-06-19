@@ -1,10 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-// No novo SDK, a importação padrão traz o inicializador correto
-const { GoogleGenAI } = require("@google/genai"); 
+import fs from 'fs';
+import path from 'path';
+import { GoogleGenAI } from '@google/genai';
+import { fileURLToPath } from 'url';
 
-const pastaImagens = path.join(__dirname, 'imagens');
-const pastaDados = path.join(__dirname, 'dados');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 if (!fs.existsSync(pastaImagens)) fs.mkdirSync(pastaImagens);
 if (!fs.existsSync(pastaDados)) fs.mkdirSync(pastaDados);
@@ -51,7 +51,7 @@ async function executar() {
             // ESTRUTURA CORRETA DO NOVO SDK:
             // Passamos um objeto simples com 'inlineData' direto no array de contents
             const resultado = await ai.models.generateContent({
-                model: 'gemini-1.5-flash',
+                model: 'gemini-2.5-flash',
                 contents: [
                     prompt,
                     {
