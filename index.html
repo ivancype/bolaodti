@@ -2,36 +2,903 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Bolão Copa 2026</title>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <canvas id="graficoPontos"></canvas>
+    <div class="dashboard-container">
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav" id="tabsNav" style="display: none;">
+            <button class="tab-btn active" id="tabBtnEvolucao" onclick="alternarTab('evolucao')">📈 Evolução Geral</button>
+            <button class="tab-btn" id="tabBtnPartida" onclick="alternarTab('partida')">🎯 Palpites por Jogo</button>
+        </div>
+
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="header-top">
+                    <span class="badge">Copa do Mundo 2026</span>
+                    <div class="match-selector-wrapper" style="display: none;">
+                        <label for="seletorPartida" style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">Partida:</label>
+                        <select id="seletorPartida" class="match-selector">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="match-title" id="tituloPartida" style="display: none;">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Fallback Message -->
+        <div id="fallbackState" style="display: none; text-align: center; padding: 3rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px;">
+            <h2 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 1rem; color: #fff;">Nenhum palpite processado</h2>
+            <p style="color: var(--text-secondary);">Para começar, adicione capturas de tela dos palpites na pasta <code>imagens/</code> e aguarde o processamento automático.</p>
+        </div>
+
+        <!-- Dashboard Content (hidden if empty) -->
+        <div id="dashboardContent" style="display: flex; flex-direction: column; gap: 2rem;">
+            
+            <!-- TAB 1: Palpites por Jogo -->
+            <div id="tabPartidaContent" style="display: none; flex-direction: column; gap: 2rem;">
+                <!-- Metrics Row -->
+                <section class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">📊 Total de Palpites</span>
+                        <span class="metric-value" id="metricTotalPalpites">-</span>
+                        <span class="metric-desc">Previsões enviadas pelos membros</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">🏆 Maior Pontuação</span>
+                        <span class="metric-value" id="metricMaiorPontuacao">-</span>
+                        <span class="metric-desc" id="metricLideres">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">⚽ Média de Pontos</span>
+                        <span class="metric-value" id="metricMediaPontos">-</span>
+                        <span class="metric-desc">Desempenho geral da rodada</span>
+                    </div>
+                </section>
+
+                <!-- Main Charts & Standings -->
+                <div class="content-grid">
+                    <!-- Chart -->
+                    <section class="chart-section">
+                        <h2 class="section-title">
+                            📈 Desempenho Visual (Líderes)
+                        </h2>
+                        <div class="chart-container">
+                            <canvas id="graficoPontos"></canvas>
+                        </div>
+                    </section>
+
+                    <!-- Predictions List -->
+                    <section class="list-section">
+                        <h2 class="section-title">
+                            📋 Classificação e Palpites
+                        </h2>
+                        <div class="predictions-list" id="listaPalpites">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- TAB 2: Evolução Geral -->
+            <div id="tabEvolucaoContent" style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Chart Section -->
+                <section class="chart-section" style="width: 100%;">
+                    <h2 class="section-title">
+                        📈 Gráfico de Evolução (Pontuação Acumulada)
+                    </h2>
+                    <div class="chart-container" style="min-height: 450px; margin-bottom: 1rem;">
+                        <canvas id="graficoEvolucao"></canvas>
+                    </div>
+                    <div id="legendaBotoesGrafico" class="chart-legend-container">
+                        <!-- Populado dinamicamente -->
+                    </div>
+                </section>
+
+                <!-- Standings Section -->
+                <section class="list-section" style="width: 100%;">
+                    <h2 class="section-title">
+                        🏆 Classificação Geral Acumulada
+                    </h2>
+                    <div class="leaderboard-table-wrapper">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr id="tabela-geral-headers">
+                                    <th style="width: 110px;" onclick="ordenarTabela1('rank')">Posição<span class="sort-icon"></span></th>
+                                    <th>
+                                        <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: space-between;">
+                                            <span onclick="ordenarTabela1('membro')" style="cursor: pointer; flex-grow: 1;">Participante<span class="sort-icon"></span></span>
+                                            <button onclick="toggleSelectAllMembrosBotao(this); event.stopPropagation();" id="btnToggleAll" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                                                Ocultar Todos
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th style="text-align: right; width: 160px;" onclick="ordenarTabela1('total')">Pontos Totais<span class="sort-icon"></span></th>
+                                    <th style="text-align: right; width: 160px;" onclick="ordenarTabela1('media')">Média / Jogo<span class="sort-icon"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaClassificacaoGeral">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Frequência de Pontuações Section -->
+                <section class="list-section" style="width: 100%;">
+                    <h2 class="section-title">
+                        📊 Frequência de Pontuações (Fez 0, 1, 3, 4 e 6 pts)
+                    </h2>
+                    <div class="leaderboard-table-wrapper">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr id="tabela-frequencias-headers">
+                                    <th onclick="ordenarTabela2('membro')">Participante<span class="sort-icon"></span></th>
+                                    <th style="text-align: center; width: 110px;" onclick="ordenarTabela2('0')">0 pts<span class="sort-icon"></span></th>
+                                    <th style="text-align: center; width: 110px;" onclick="ordenarTabela2('1')">1 pt<span class="sort-icon"></span></th>
+                                    <th style="text-align: center; width: 110px;" onclick="ordenarTabela2('3')">3 pts<span class="sort-icon"></span></th>
+                                    <th style="text-align: center; width: 110px;" onclick="ordenarTabela2('4')">4 pts<span class="sort-icon"></span></th>
+                                    <th style="text-align: center; width: 110px;" onclick="ordenarTabela2('6')">6 pts<span class="sort-icon"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaFrequenciaPontos">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Desenvolvido com 💜 usando Gemini 3.5 Flash &bull; <a href="https://github.com/ivancype/bolaodti" target="_blank">Repositório GitHub</a></p>
+    </footer>
 
     <script>
-        async function renderizarDashboard() {
-            // Supondo que você leia o JSON consolidado gerado pela action
-            const res = await fetch('dados/Screenshot (19 de jun. de 2026 15:27:45).json');
-            const dadosPartida = await res.json();
+        let chartInstance = null;
+        let chartEvolucaoInstance = null;
+        let dadosTodasPartidas = [];
+        let dadosMembrosCalculados = [];
+        let listaMembrosGlobais = [];
+        let membrosSelecionados = new Set();
+        let sortTabela1 = { chave: 'total', dir: 'desc' };
+        let sortTabela2 = { chave: 'total', dir: 'desc' };
 
-            // Preparar dados para o gráfico (Exemplo: Membros vs Pontos obtidos)
-            const labels = dadosPartida.previsoes_membros.map(m => m.membro);
-            const pontos = dadosPartida.previsoes_membros.map(m => m.pontos);
+        // Cores vibrantes e estéticas para as linhas dos participantes
+        const paletaCores = [
+            '#6366f1', // Indigo
+            '#10b981', // Emerald
+            '#f59e0b', // Amber
+            '#ef4444', // Rose
+            '#06b6d4', // Cyan
+            '#a855f7', // Purple
+            '#f97316', // Orange
+            '#ec4899', // Pink
+            '#84cc16', // Lime
+            '#14b8a6', // Teal
+            '#3b82f6', // Blue
+            '#d946ef'  // Fuchsia
+        ];
 
+        async function carregarIndex() {
+            try {
+                const res = await fetch(`dados/index.json?t=${Date.now()}`);
+                if (!res.ok) throw new Error('Não foi possível carregar o index de dados.');
+                
+                const index = await res.json();
+                if (!index || index.length === 0) {
+                    mostrarMensagemVazio();
+                    return;
+                }
+
+                const seletor = document.getElementById('seletorPartida');
+                seletor.innerHTML = '';
+
+                index.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.arquivo;
+                    opt.textContent = item.titulo;
+                    seletor.appendChild(opt);
+                });
+
+                // Escutar mudanças no seletor
+                seletor.addEventListener('change', (e) => {
+                    carregarDadosPartida(e.target.value);
+                });
+
+                // Carrega os dados de todas as partidas em segundo plano para o gráfico de evolução
+                const promessas = index.map(item => fetch(`dados/${item.arquivo}?t=${Date.now()}`).then(r => r.json()));
+                dadosTodasPartidas = await Promise.all(promessas);
+
+                // Renderiza a aba Evolução Geral que é carregada primeiro por padrão
+                renderizarEvolucaoGeral();
+
+                // Carregar primeiro item de partida por padrão em segundo plano
+                carregarDadosPartida(index[0].arquivo);
+
+            } catch (err) {
+                console.error(err);
+                mostrarMensagemVazio();
+            }
+        }
+
+        async function carregarDadosPartida(arquivoJson) {
+            try {
+                const res = await fetch(`dados/${arquivoJson}?t=${Date.now()}`);
+                if (!res.ok) throw new Error('Erro ao carregar detalhes da partida.');
+
+                const dados = await res.json();
+                renderizarInterface(dados);
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao carregar os dados desta partida.');
+            }
+        }
+
+        function mostrarMensagemVazio() {
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('tabsNav').style.display = 'none';
+            document.getElementById('fallbackState').style.display = 'block';
+        }
+
+        function formatarHora(hora, minuto) {
+            if (hora === undefined || minuto === undefined) return '';
+            const h = String(hora).padStart(2, '0');
+            const m = String(minuto).padStart(2, '0');
+            return `${h}:${m}`;
+        }
+
+        function formatarData(dia, mes) {
+            if (dia === undefined || mes === undefined) return '';
+            const d = String(dia).padStart(2, '0');
+            const m = String(mes).padStart(2, '0');
+            return `${d}/${m}`;
+        }
+
+        function renderizarInterface(dados) {
+            // Mostrar conteúdo e esconder fallback
+            document.getElementById('dashboardContent').style.display = 'flex';
+            document.getElementById('tabsNav').style.display = 'flex';
+            document.getElementById('fallbackState').style.display = 'none';
+
+            // Atualizar cabeçalhos
+            document.getElementById('tituloPartida').innerHTML = `
+                <span>${dados.detalhes_partida.time_1}</span>
+                <span class="vs">vs</span>
+                <span>${dados.detalhes_partida.time_2}</span>
+            `;
+
+            // Calcular Métricas
+            const previsoes = dados.previsoes_membros || [];
+            const totalPalpites = previsoes.length;
+            
+            let maiorPontuacao = 0;
+            let lideres = [];
+            let mediaPontos = 0;
+
+            if (totalPalpites > 0) {
+                const pontosArray = previsoes.map(m => m.pontos || 0);
+                maiorPontuacao = Math.max(...pontosArray);
+                
+                // Encontrar líderes
+                const lideresNomes = previsoes
+                    .filter(m => (m.pontos || 0) === maiorPontuacao)
+                    .map(m => m.membro);
+                
+                lideres = lideresNomes.join(', ');
+                
+                const somaPontos = pontosArray.reduce((a, b) => a + b, 0);
+                mediaPontos = (somaPontos / totalPalpites).toFixed(1);
+            }
+
+            document.getElementById('metricTotalPalpites').textContent = totalPalpites;
+            document.getElementById('metricMaiorPontuacao').textContent = `${maiorPontuacao} pts`;
+            document.getElementById('metricLideres').textContent = lideres ? `Obtida por: ${lideres}` : 'Sem dados';
+            document.getElementById('metricMediaPontos').textContent = `${mediaPontos} pts`;
+
+            // Renderizar Lista (Ordenada por Pontos Decrescente, servindo de ranking da partida)
+            const listaElement = document.getElementById('listaPalpites');
+            listaElement.innerHTML = '';
+
+            const palpitesOrdenados = [...previsoes].sort((a, b) => (b.pontos || 0) - (a.pontos || 0));
+
+            palpitesOrdenados.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'prediction-item';
+
+                // Classe da medalha baseada nos pontos
+                let badgeClass = 'low';
+                if (p.pontos === maiorPontuacao && maiorPontuacao > 0) {
+                    badgeClass = 'top';
+                } else if (p.pontos >= 3) {
+                    badgeClass = 'mid';
+                }
+
+                // Iniciais do Avatar
+                const iniciais = p.membro ? p.membro.substring(0, 2).toUpperCase() : '??';
+                
+                const dataStr = formatarData(p.dia_previsao, p.mes_previsao);
+                const horaStr = formatarHora(p.hora_previsao, p.minuto_previsao);
+                const dataHora = [dataStr, horaStr].filter(x => x).join(' ');
+
+                item.innerHTML = `
+                    <div class="prediction-user-info">
+                        <div class="user-avatar">${iniciais}</div>
+                        <div class="user-details">
+                            <span class="user-name">${p.membro}</span>
+                            <span class="prediction-time">${dataHora ? 'Enviado em ' + dataHora : 'Palpite registrado'}</span>
+                        </div>
+                    </div>
+                    <div class="prediction-scores">
+                        <span class="score-badge">${p.placar_time_1} - ${p.placar_time_2}</span>
+                        <span class="points-badge ${badgeClass}">${p.pontos || 0} pts</span>
+                    </div>
+                `;
+                listaElement.appendChild(item);
+            });
+
+            // Renderizar Gráfico de Barras da Partida
+            renderizarGrafico(palpitesOrdenados, dados.detalhes_partida.time_1, dados.detalhes_partida.time_2);
+        }
+
+        function renderizarGrafico(previsoes, time1, time2) {
             const ctx = document.getElementById('graficoPontos').getContext('2d');
-            new Chart(ctx, {
+
+            const labels = previsoes.map(p => p.membro);
+            const pontos = previsoes.map(p => p.pontos || 0);
+
+            // Destruir instância anterior do gráfico se existir
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Criar gradiente para as barras
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, '#7c3aed'); // Purple
+            gradient.addColorStop(1, '#4f46e5'); // Indigo
+
+            chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: `Pontuação - ${dadosPartida.detalhes_partida.time_1} vs ${dadosPartida.detalhes_partida.time_2}`,
+                        label: 'Pontos',
                         data: pontos,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                        backgroundColor: gradient,
+                        borderRadius: 8,
+                        hoverBackgroundColor: '#c084fc',
+                        borderWidth: 0,
                     }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.08)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    const item = previsoes[index];
+                                    return `Pontos: ${context.raw} (${item.placar_time_1}x${item.placar_time_2})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            border: {
+                                dash: [5, 5]
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                color: '#94a3b8',
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
-        window.onload = renderizarDashboard;
+
+        // Alternar entre a aba de palpites por jogo e a aba de evolução geral
+        function alternarTab(tab) {
+            const btnPartida = document.getElementById('tabBtnPartida');
+            const btnEvolucao = document.getElementById('tabBtnEvolucao');
+            const contentPartida = document.getElementById('tabPartidaContent');
+            const contentEvolucao = document.getElementById('tabEvolucaoContent');
+            const selectorWrapper = document.querySelector('.match-selector-wrapper');
+            const tituloPartida = document.getElementById('tituloPartida');
+
+            if (tab === 'partida') {
+                btnPartida.classList.add('active');
+                btnEvolucao.classList.remove('active');
+                contentPartida.style.display = 'flex';
+                contentEvolucao.style.display = 'none';
+                if (selectorWrapper) selectorWrapper.style.display = 'flex';
+                if (tituloPartida) tituloPartida.style.display = 'flex';
+            } else if (tab === 'evolucao') {
+                btnPartida.classList.remove('active');
+                btnEvolucao.classList.add('active');
+                contentPartida.style.display = 'none';
+                contentEvolucao.style.display = 'flex';
+                if (selectorWrapper) selectorWrapper.style.display = 'none';
+                if (tituloPartida) tituloPartida.style.display = 'none';
+                
+                renderizarEvolucaoGeral();
+            }
+        }
+
+        // Renderiza o gráfico de linha da pontuação acumulada (Eixo X = ID da partida, Eixo Y = Pontuação total)
+        function renderizarEvolucaoGeral() {
+            if (!dadosTodasPartidas || dadosTodasPartidas.length === 0) return;
+
+            // Ordena as partidas por ID de forma crescente (cronológica) para traçar o gráfico de evolução
+            const partidasOrdenadas = [...dadosTodasPartidas].sort((a, b) => a.detalhes_partida.id - b.detalhes_partida.id);
+
+            // Mapeia todos os membros únicos participantes do bolão
+            const todosMembros = new Set();
+            partidasOrdenadas.forEach(partida => {
+                partida.previsoes_membros.forEach(p => todosMembros.add(p.membro));
+            });
+            listaMembrosGlobais = Array.from(todosMembros);
+
+            // Inicializar membros selecionados se estiver vazio
+            if (membrosSelecionados.size === 0) {
+                listaMembrosGlobais.forEach(m => membrosSelecionados.add(m));
+            }
+
+            // Eixo X: IDs das partidas (ou abreviação dos confrontos para melhor legibilidade no gráfico)
+            const labelsX = partidasOrdenadas.map(p => `Jogo ${p.detalhes_partida.id} (${p.detalhes_partida.time_1.substring(0,3)} x ${p.detalhes_partida.time_2.substring(0,3)})`);
+
+            // Gera os datasets dos participantes selecionados
+            const datasets = gerarDatasetsEvolucao();
+
+            // Destrói gráfico anterior se houver
+            if (chartEvolucaoInstance) {
+                chartEvolucaoInstance.destroy();
+            }
+
+            // Renderiza o gráfico de linhas
+            const ctx = document.getElementById('graficoEvolucao').getContext('2d');
+            chartEvolucaoInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labelsX,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.08)',
+                            borderWidth: 1,
+                            padding: 12,
+                            mode: 'index',
+                            intersect: false,
+                            itemSort: function(a, b) {
+                                return b.raw - a.raw; // Ordena decrescente por pontos no tooltip
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const index = context.dataIndex;
+                                    const chart = context.chart;
+                                    
+                                    // Encontra o valor máximo dos participantes visíveis neste índice
+                                    let maxVal = 0;
+                                    chart.data.datasets.forEach((ds, dsIdx) => {
+                                        if (chart.isDatasetVisible(dsIdx)) {
+                                            const val = ds.data[index] || 0;
+                                            if (val > maxVal) {
+                                                maxVal = val;
+                                            }
+                                        }
+                                    });
+                                    
+                                    const currentVal = context.raw || 0;
+                                    const label = context.dataset.label || '';
+                                    
+                                    if (currentVal === maxVal) {
+                                        return `${label}: ${currentVal} pts`;
+                                    } else {
+                                        const diff = currentVal - maxVal;
+                                        return `${label}: ${currentVal} pts (${diff})`; // diff já é negativo
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            border: {
+                                dash: [5, 5]
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Preenche a tabela de classificação geral acumulada e frequências
+            dadosMembrosCalculados = listaMembrosGlobais.map(membro => {
+                let totalPontos = 0;
+                let jogosPalpitados = 0;
+                const frequencias = { 0: 0, 1: 0, 3: 0, 4: 0, 6: 0 };
+
+                partidasOrdenadas.forEach(partida => {
+                    const prev = partida.previsoes_membros.find(p => p.membro === membro);
+                    if (prev) {
+                        const pts = prev.pontos || 0;
+                        totalPontos += pts;
+                        jogosPalpitados++;
+                        if (frequencias[pts] !== undefined) {
+                            frequencias[pts]++;
+                        }
+                    }
+                });
+
+                return {
+                    membro: membro,
+                    total: totalPontos,
+                    media: jogosPalpitados > 0 ? parseFloat((totalPontos / jogosPalpitados).toFixed(1)) : 0.0,
+                    frequencias: frequencias
+                };
+            });
+
+            // Ordenação padrão inicial (maior pontuação)
+            dadosMembrosCalculados.sort((a, b) => b.total - a.total);
+
+            // Renderiza ambas as tabelas
+            desenharTabela1();
+            desenharTabela2();
+            desenharLegendaBotoes();
+        }
+
+        // --- Funções de Ordenação e Renderização Interativa das Tabelas ---
+
+        function obterCorMembro(membro) {
+            const idx = listaMembrosGlobais.indexOf(membro);
+            if (idx === -1) return '#ffffff';
+            return paletaCores[idx % paletaCores.length];
+        }
+
+        function desenharLegendaBotoes() {
+            const container = document.getElementById('legendaBotoesGrafico');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            // Ordenar botões da legenda por pontuação total do rank
+            const membrosOrdenados = [...listaMembrosGlobais].sort((a, b) => {
+                const totalA = dadosMembrosCalculados.find(x => x.membro === a)?.total || 0;
+                const totalB = dadosMembrosCalculados.find(x => x.membro === b)?.total || 0;
+                return totalB - totalA;
+            });
+
+            membrosOrdenados.forEach(membro => {
+                const isSelected = membrosSelecionados.has(membro);
+                const btnClass = isSelected ? 'member-btn active' : 'member-btn';
+                const cor = obterCorMembro(membro);
+                const btnStyle = isSelected 
+                    ? `background: ${cor}15; color: ${cor}; border: 1px solid ${cor};` 
+                    : `background: rgba(255,255,255,0.02); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.08);`;
+
+                const btn = document.createElement('button');
+                btn.className = btnClass;
+                btn.style.cssText = btnStyle;
+                btn.onclick = () => toggleSelecaoMembroBotao(membro);
+                btn.innerHTML = `
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: ${cor}; display: inline-block; margin-right: 4px;"></span>
+                    ${membro}
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function desenharTabela1() {
+            const tbody = document.getElementById('tabelaClassificacaoGeral');
+            if (!tbody) return;
+
+            const dadosOrdenados = [...dadosMembrosCalculados];
+            dadosOrdenados.sort((a, b) => {
+                if (sortTabela1.chave === 'rank') {
+                    const idxA = dadosMembrosCalculados.findIndex(x => x.membro === a.membro);
+                    const idxB = dadosMembrosCalculados.findIndex(x => x.membro === b.membro);
+                    return sortTabela1.dir === 'asc' ? idxA - idxB : idxB - idxA;
+                }
+
+                let valA = a[sortTabela1.chave];
+                let valB = b[sortTabela1.chave];
+
+                if (sortTabela1.chave === 'total' || sortTabela1.chave === 'media') {
+                    valA = parseFloat(valA);
+                    valB = parseFloat(valB);
+                }
+
+                if (valA < valB) return sortTabela1.dir === 'asc' ? -1 : 1;
+                if (valA > valB) return sortTabela1.dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            tbody.innerHTML = '';
+            dadosOrdenados.forEach(item => {
+                const tr = document.createElement('tr');
+                const rank = dadosMembrosCalculados.findIndex(x => x.membro === item.membro) + 1;
+
+                let rankClass = 'rank-other';
+                if (rank === 1) rankClass = 'rank-1';
+                else if (rank === 2) rankClass = 'rank-2';
+                else if (rank === 3) rankClass = 'rank-3';
+
+                const isSelected = membrosSelecionados.has(item.membro);
+                const btnClass = isSelected ? 'member-btn active' : 'member-btn';
+                const cor = obterCorMembro(item.membro);
+                const btnStyle = isSelected 
+                    ? `background: ${cor}15; color: ${cor}; border: 1px solid ${cor};` 
+                    : `background: rgba(255,255,255,0.02); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.08);`;
+
+                tr.innerHTML = `
+                    <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+                    <td>
+                        <button class="${btnClass}" style="${btnStyle}" onclick="toggleSelecaoMembroBotao('${item.membro}')">
+                            ${item.membro}
+                        </button>
+                    </td>
+                    <td style="text-align: right; font-weight: 700; font-family: var(--font-display); font-size: 1.05rem; color: #a855f7;">${item.total} pts</td>
+                    <td style="text-align: right; color: var(--text-secondary);">${item.media.toFixed(1)} pts/jogo</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Atualiza o botão de "Ocultar/Exibir Todos"
+            const btnAll = document.getElementById('btnToggleAll');
+            if (btnAll) {
+                const todosMembros = Array.from(new Set(dadosMembrosCalculados.map(x => x.membro)));
+                const todosSelecionados = todosMembros.length > 0 && todosMembros.every(m => membrosSelecionados.has(m));
+                btnAll.textContent = todosSelecionados ? 'Ocultar Todos' : 'Exibir Todos';
+            }
+
+            atualizarIndicadoresSort('tabela-geral-headers', sortTabela1);
+        }
+
+        function desenharTabela2() {
+            const tbody = document.getElementById('tabelaFrequenciaPontos');
+            if (!tbody) return;
+
+            const dadosOrdenados = [...dadosMembrosCalculados];
+            dadosOrdenados.sort((a, b) => {
+                let valA, valB;
+                if (sortTabela2.chave === 'membro') {
+                    valA = a.membro;
+                    valB = b.membro;
+                } else if (sortTabela2.chave === 'total') {
+                    valA = a.total;
+                    valB = b.total;
+                } else {
+                    valA = a.frequencias[sortTabela2.chave] || 0;
+                    valB = b.frequencias[sortTabela2.chave] || 0;
+                }
+
+                if (valA < valB) return sortTabela2.dir === 'asc' ? -1 : 1;
+                if (valA > valB) return sortTabela2.dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            tbody.innerHTML = '';
+            dadosOrdenados.forEach(item => {
+                const tr = document.createElement('tr');
+                
+                const isSelected = membrosSelecionados.has(item.membro);
+                const btnClass = isSelected ? 'member-btn active' : 'member-btn';
+                const cor = obterCorMembro(item.membro);
+                const btnStyle = isSelected 
+                    ? `background: ${cor}15; color: ${cor}; border: 1px solid ${cor};` 
+                    : `background: rgba(255,255,255,0.02); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.08);`;
+
+                tr.innerHTML = `
+                    <td>
+                        <button class="${btnClass}" style="${btnStyle}" onclick="toggleSelecaoMembroBotao('${item.membro}')">
+                            ${item.membro}
+                        </button>
+                    </td>
+                    <td style="text-align: center; color: var(--danger); font-weight: bold; background: rgba(239, 68, 68, 0.05);">${item.frequencias[0]}</td>
+                    <td style="text-align: center; color: var(--text-secondary);">${item.frequencias[1]}</td>
+                    <td style="text-align: center; color: var(--text-primary);">${item.frequencias[3]}</td>
+                    <td style="text-align: center; color: var(--warning); font-weight: bold; background: rgba(245, 158, 11, 0.05);">${item.frequencias[4]}</td>
+                    <td style="text-align: center; color: var(--success); font-weight: bold; background: rgba(16, 185, 129, 0.05);">${item.frequencias[6]}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            atualizarIndicadoresSort('tabela-frequencias-headers', sortTabela2);
+        }
+
+        // --- Funções Auxiliares para o Gráfico de Evolução e Filtros de Participantes ---
+
+        function gerarDatasetsEvolucao() {
+            const partidasOrdenadas = [...dadosTodasPartidas].sort((a, b) => a.detalhes_partida.id - b.detalhes_partida.id);
+
+            const datasets = [];
+            listaMembrosGlobais.forEach((membro, idx) => {
+                if (!membrosSelecionados.has(membro)) return;
+
+                let acumulado = 0;
+                const dataPontos = partidasOrdenadas.map(partida => {
+                    const prev = partida.previsoes_membros.find(p => p.membro === membro);
+                    acumulado += (prev ? (prev.pontos || 0) : 0);
+                    return acumulado;
+                });
+
+                const cor = paletaCores[idx % paletaCores.length];
+
+                datasets.push({
+                    label: membro,
+                    data: dataPontos,
+                    borderColor: cor,
+                    backgroundColor: cor,
+                    borderWidth: 3.5,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.15,
+                    fill: false
+                });
+            });
+
+            return datasets;
+        }
+
+        function atualizarFiltroGraficoEvolucao() {
+            if (!chartEvolucaoInstance) return;
+            const datasetsFiltrados = gerarDatasetsEvolucao();
+            chartEvolucaoInstance.data.datasets = datasetsFiltrados;
+            chartEvolucaoInstance.update();
+            desenharLegendaBotoes();
+        }
+
+        function toggleSelecaoMembroBotao(membro) {
+            if (membrosSelecionados.has(membro)) {
+                membrosSelecionados.delete(membro);
+            } else {
+                membrosSelecionados.add(membro);
+            }
+
+            // Redesenha ambas as tabelas para atualizar o estado visual dos botões
+            desenharTabela1();
+            desenharTabela2();
+
+            // Atualiza o gráfico de linhas
+            atualizarFiltroGraficoEvolucao();
+        }
+
+        function toggleSelectAllMembrosBotao(btn) {
+            const todosMembros = Array.from(new Set(dadosMembrosCalculados.map(x => x.membro)));
+            const todosSelecionados = todosMembros.every(m => membrosSelecionados.has(m));
+
+            todosMembros.forEach(m => {
+                if (todosSelecionados) {
+                    membrosSelecionados.delete(m);
+                } else {
+                    membrosSelecionados.add(m);
+                }
+            });
+
+            desenharTabela1();
+            desenharTabela2();
+            atualizarFiltroGraficoEvolucao();
+        }
+
+        function ordenarTabela1(chave) {
+            if (sortTabela1.chave === chave) {
+                sortTabela1.dir = sortTabela1.dir === 'desc' ? 'asc' : 'desc';
+            } else {
+                sortTabela1.chave = chave;
+                sortTabela1.dir = (chave === 'membro' || chave === 'rank') ? 'asc' : 'desc';
+            }
+            desenharTabela1();
+        }
+
+        function ordenarTabela2(chave) {
+            if (sortTabela2.chave === chave) {
+                sortTabela2.dir = sortTabela2.dir === 'desc' ? 'asc' : 'desc';
+            } else {
+                sortTabela2.chave = chave;
+                sortTabela2.dir = (chave === 'membro') ? 'asc' : 'desc';
+            }
+            desenharTabela2();
+        }
+
+        function atualizarIndicadoresSort(headerRowId, sortState) {
+            const row = document.getElementById(headerRowId);
+            if (!row) return;
+
+            const headers = row.querySelectorAll('th');
+            headers.forEach(th => {
+                const icon = th.querySelector('.sort-icon');
+                if (!icon) return;
+
+                // Limpa o indicador
+                icon.textContent = '';
+
+                const onclickAttr = th.getAttribute('onclick');
+                if (onclickAttr) {
+                    // Extrai a chave de ordenação da chamada do método
+                    const match = onclickAttr.match(/'([^']+)'/);
+                    if (match && match[1] === sortState.chave) {
+                        icon.textContent = sortState.dir === 'asc' ? ' ▲' : ' ▼';
+                        icon.style.color = 'var(--warning)';
+                    } else {
+                        icon.textContent = ' ↕';
+                        icon.style.color = 'var(--text-muted)';
+                    }
+                }
+            });
+        }
+
+        window.onload = carregarIndex;
     </script>
 </body>
 </html>

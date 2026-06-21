@@ -1,0 +1,130 @@
+{
+  "detalhes_partida": {
+    "time_1": "Brasil",
+    "time_2": "Haiti",
+    "total_previsoes": 12,
+    "id": 31
+  },
+  "previsoes_membros": [
+    {
+      "membro": "Carlão84",
+      "dia_previsao": 16,
+      "mes_previsao": 6,
+      "hora_previsao": 21,
+      "minuto_previsao": 35,
+      "placar_time_1": 4,
+      "placar_time_2": 0,
+      "pontos": 4
+    },
+    {
+      "membro": "YURE NEDIR",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 13,
+      "minuto_previsao": 22,
+      "placar_time_1": 3,
+      "placar_time_2": 0,
+      "pontos": 6
+    },
+    {
+      "membro": "Jesse",
+      "dia_previsao": 17,
+      "mes_previsao": 6,
+      "hora_previsao": 1,
+      "minuto_previsao": 5,
+      "placar_time_1": 3,
+      "placar_time_2": 0,
+      "pontos": 6
+    },
+    {
+      "membro": "Renato Vidal",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 19,
+      "minuto_previsao": 1,
+      "placar_time_1": 3,
+      "placar_time_2": 0,
+      "pontos": 6
+    },
+    {
+      "membro": "GustavoMelo",
+      "dia_previsao": 16,
+      "mes_previsao": 6,
+      "hora_previsao": 13,
+      "minuto_previsao": 21,
+      "placar_time_1": 4,
+      "placar_time_2": 0,
+      "pontos": 4
+    },
+    {
+      "membro": "Diegothadeu",
+      "dia_previsao": 18,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 45,
+      "placar_time_1": 2,
+      "placar_time_2": 0,
+      "pontos": 4
+    },
+    {
+      "membro": "Ivancype (Você)",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 8,
+      "minuto_previsao": 2,
+      "placar_time_1": 5,
+      "placar_time_2": 0,
+      "pontos": 4
+    },
+    {
+      "membro": "Daniel Dac",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 39,
+      "placar_time_1": 5,
+      "placar_time_2": 1,
+      "pontos": 3
+    },
+    {
+      "membro": "Trembolona",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 1,
+      "minuto_previsao": 50,
+      "placar_time_1": 2,
+      "placar_time_2": 0,
+      "pontos": 4
+    },
+    {
+      "membro": "Níkolas",
+      "dia_previsao": 17,
+      "mes_previsao": 6,
+      "hora_previsao": 20,
+      "minuto_previsao": 13,
+      "placar_time_1": 4,
+      "placar_time_2": 1,
+      "pontos": 3
+    },
+    {
+      "membro": "v.aleixo",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 7,
+      "minuto_previsao": 44,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 3
+    },
+    {
+      "membro": "Wendell Oliveira",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 21,
+      "placar_time_1": 2,
+      "placar_time_2": 0,
+      "pontos": 4
+    }
+  ]
+}

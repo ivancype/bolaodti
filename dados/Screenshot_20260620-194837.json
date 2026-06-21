@@ -1,0 +1,100 @@
+{
+  "detalhes_partida": {
+    "time_1": "Turquia",
+    "time_2": "Paraguai",
+    "total_previsoes": 9,
+    "id": 32
+  },
+  "previsoes_membros": [
+    {
+      "membro": "Carlão84",
+      "dia_previsao": 16,
+      "mes_previsao": 6,
+      "hora_previsao": 21,
+      "minuto_previsao": 35,
+      "placar_time_1": 1,
+      "placar_time_2": 2,
+      "pontos": 3
+    },
+    {
+      "membro": "Jesse",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 22,
+      "minuto_previsao": 23,
+      "placar_time_1": 1,
+      "placar_time_2": 2,
+      "pontos": 3
+    },
+    {
+      "membro": "Renato Vidal",
+      "dia_previsao": 17,
+      "mes_previsao": 6,
+      "hora_previsao": 21,
+      "minuto_previsao": 27,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 1
+    },
+    {
+      "membro": "Diegothadeu",
+      "dia_previsao": 18,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 46,
+      "placar_time_1": 1,
+      "placar_time_2": 1,
+      "pontos": 1
+    },
+    {
+      "membro": "Ivancype (Você)",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 40,
+      "placar_time_1": 3,
+      "placar_time_2": 1,
+      "pontos": 1
+    },
+    {
+      "membro": "Daniel Dac",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 41,
+      "placar_time_1": 2,
+      "placar_time_2": 2,
+      "pontos": 0
+    },
+    {
+      "membro": "Níkolas",
+      "dia_previsao": 17,
+      "mes_previsao": 6,
+      "hora_previsao": 20,
+      "minuto_previsao": 28,
+      "placar_time_1": 3,
+      "placar_time_2": 2,
+      "pontos": 0
+    },
+    {
+      "membro": "v.aleixo",
+      "dia_previsao": 16,
+      "mes_previsao": 6,
+      "hora_previsao": 13,
+      "minuto_previsao": 17,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 1
+    },
+    {
+      "membro": "Wendell Oliveira",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 21,
+      "placar_time_1": 2,
+      "placar_time_2": 2,
+      "pontos": 0
+    }
+  ]
+}
