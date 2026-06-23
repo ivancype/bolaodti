@@ -117,7 +117,7 @@ async function executar() {
             // ESTRUTURA CORRETA DO NOVO SDK:
             // Passamos um objeto simples com 'inlineData' direto no array de contents
             const resultado = await ai.models.generateContent({
-                model: 'gemini-3.5-flash',
+                model: 'gemini-3.1-pro',
                 contents: [
                     prompt,
                     {
@@ -127,7 +127,12 @@ async function executar() {
                             mimeType: "image/png"
                         }
                     }
-                ]
+                ],
+                config: {
+                    thinkingConfig: {
+                        thinkingLevel: 'LOW'
+                    }
+                }
             });
 
             // No novo SDK, o texto plano vem direto na propriedade .text
