@@ -117,7 +117,7 @@ async function executar() {
             // ESTRUTURA CORRETA DO NOVO SDK:
             // Passamos um objeto simples com 'inlineData' direto no array de contents
             const resultado = await ai.models.generateContent({
-                model: 'gemini-3.1-pro',
+                model: 'gemini-3.1-pro-preview',
                 contents: [
                     prompt,
                     {
