@@ -1,0 +1,120 @@
+{
+  "detalhes_partida": {
+    "time_1": "África do Sul",
+    "time_2": "Coreia do Sul",
+    "total_previsoes": 11,
+    "id": 54
+  },
+  "previsoes_membros": [
+    {
+      "membro": "Jesse",
+      "dia_previsao": 23,
+      "mes_previsao": 6,
+      "hora_previsao": 17,
+      "minuto_previsao": 10,
+      "placar_time_1": 1,
+      "placar_time_2": 2,
+      "pontos": 1
+    },
+    {
+      "membro": "Carlão84",
+      "dia_previsao": 24,
+      "mes_previsao": 6,
+      "hora_previsao": 15,
+      "minuto_previsao": 43,
+      "placar_time_1": 1,
+      "placar_time_2": 2,
+      "pontos": 1
+    },
+    {
+      "membro": "Renato Vidal",
+      "dia_previsao": 17,
+      "mes_previsao": 6,
+      "hora_previsao": 21,
+      "minuto_previsao": 25,
+      "placar_time_1": 0,
+      "placar_time_2": 2,
+      "pontos": 0
+    },
+    {
+      "membro": "Ivancype (Você)",
+      "dia_previsao": 24,
+      "mes_previsao": 6,
+      "hora_previsao": 13,
+      "minuto_previsao": 41,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 3
+    },
+    {
+      "membro": "Daniel Dac",
+      "dia_previsao": 24,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 3,
+      "placar_time_1": 0,
+      "placar_time_2": 2,
+      "pontos": 0
+    },
+    {
+      "membro": "GustavoMelo",
+      "dia_previsao": 24,
+      "mes_previsao": 6,
+      "hora_previsao": 21,
+      "minuto_previsao": 50,
+      "placar_time_1": 1,
+      "placar_time_2": 3,
+      "pontos": 1
+    },
+    {
+      "membro": "Diegothadeu",
+      "dia_previsao": 23,
+      "mes_previsao": 6,
+      "hora_previsao": 19,
+      "minuto_previsao": 15,
+      "placar_time_1": 1,
+      "placar_time_2": 2,
+      "pontos": 1
+    },
+    {
+      "membro": "Níkolas",
+      "dia_previsao": 24,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 50,
+      "placar_time_1": 0,
+      "placar_time_2": 2,
+      "pontos": 0
+    },
+    {
+      "membro": "Trembolona",
+      "dia_previsao": 23,
+      "mes_previsao": 6,
+      "hora_previsao": 19,
+      "minuto_previsao": 22,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 3
+    },
+    {
+      "membro": "Wendell Oliveira",
+      "dia_previsao": 19,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 19,
+      "placar_time_1": 1,
+      "placar_time_2": 2,
+      "pontos": 1
+    },
+    {
+      "membro": "v.aleixo",
+      "dia_previsao": 22,
+      "mes_previsao": 6,
+      "hora_previsao": 22,
+      "minuto_previsao": 54,
+      "placar_time_1": 2,
+      "placar_time_2": 2,
+      "pontos": 0
+    }
+  ]
+}
