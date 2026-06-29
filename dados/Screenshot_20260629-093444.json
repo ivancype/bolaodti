@@ -1,0 +1,130 @@
+{
+  "detalhes_partida": {
+    "time_1": "Cabo Verde",
+    "time_2": "Arábia Saudita",
+    "total_previsoes": 12,
+    "id": 64
+  },
+  "previsoes_membros": [
+    {
+      "membro": "Jesse",
+      "dia_previsao": 26,
+      "mes_previsao": 6,
+      "hora_previsao": 11,
+      "minuto_previsao": 26,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "YURE NEDIR",
+      "dia_previsao": 26,
+      "mes_previsao": 6,
+      "hora_previsao": 19,
+      "minuto_previsao": 55,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "Renato Vidal",
+      "dia_previsao": 26,
+      "mes_previsao": 6,
+      "hora_previsao": 10,
+      "minuto_previsao": 48,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "Carlão84",
+      "dia_previsao": 25,
+      "mes_previsao": 6,
+      "hora_previsao": 23,
+      "minuto_previsao": 49,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "Ivancype (Você)",
+      "dia_previsao": 26,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 54,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "Diegothadeu",
+      "dia_previsao": 25,
+      "mes_previsao": 6,
+      "hora_previsao": 13,
+      "minuto_previsao": 34,
+      "placar_time_1": 1,
+      "placar_time_2": 0,
+      "pontos": 1
+    },
+    {
+      "membro": "GustavoMelo",
+      "dia_previsao": 24,
+      "mes_previsao": 6,
+      "hora_previsao": 23,
+      "minuto_previsao": 39,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "Níkolas",
+      "dia_previsao": 24,
+      "mes_previsao": 6,
+      "hora_previsao": 20,
+      "minuto_previsao": 1,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "Daniel Dac",
+      "dia_previsao": 26,
+      "mes_previsao": 6,
+      "hora_previsao": 18,
+      "minuto_previsao": 43,
+      "placar_time_1": 2,
+      "placar_time_2": 0,
+      "pontos": 1
+    },
+    {
+      "membro": "Trembolona",
+      "dia_previsao": 25,
+      "mes_previsao": 6,
+      "hora_previsao": 22,
+      "minuto_previsao": 28,
+      "placar_time_1": 2,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "Wendell Oliveira",
+      "dia_previsao": 25,
+      "mes_previsao": 6,
+      "hora_previsao": 9,
+      "minuto_previsao": 34,
+      "placar_time_1": 3,
+      "placar_time_2": 1,
+      "pontos": 0
+    },
+    {
+      "membro": "v.aleixo",
+      "dia_previsao": 25,
+      "mes_previsao": 6,
+      "hora_previsao": 5,
+      "minuto_previsao": 30,
+      "placar_time_1": 1,
+      "placar_time_2": 2,
+      "pontos": 0
+    }
+  ]
+}
